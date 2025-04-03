@@ -4,4 +4,6 @@ results
 data
 *.filelist
 /data_server/target
-checkpoints
+# checkpoints
+__pycache__
+docs
