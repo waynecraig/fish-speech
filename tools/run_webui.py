@@ -1,6 +1,7 @@
 import os
 from argparse import ArgumentParser
 from pathlib import Path
+import gradio as gr
 
 import pyrootutils
 import torch
@@ -12,8 +13,10 @@ from fish_speech.inference_engine import TTSInferenceEngine
 from fish_speech.models.text2semantic.inference import launch_thread_safe_queue
 from fish_speech.models.vqgan.inference import load_model as load_decoder_model
 from fish_speech.utils.schema import ServeTTSRequest
-from tools.webui2 import build_app
-from tools.webui2.inference import get_inference_wrapper
+from tools.webui2 import build_app as build_app2
+from tools.webui2.inference import get_inference_wrapper as get_inference_wrapper2
+from tools.webui import build_app
+from tools.webui.inference import get_inference_wrapper
 
 # Make einx happy
 os.environ["EINX_FILTER_TRACEBACK"] = "false"
@@ -99,6 +102,16 @@ if __name__ == "__main__":
 
     # Get the inference function with the immutable arguments
     inference_fct = get_inference_wrapper(inference_engine)
+    inference_fct2 = get_inference_wrapper2(inference_engine)
 
     app = build_app(inference_fct, args.theme)
-    app.launch(show_api=True)
+    app2 = build_app2(inference_fct2, args.theme)
+
+    with gr.Blocks() as demo:
+        with gr.Tab("Page 1"):
+            app.render()
+
+        with gr.Tab("Page 2"):
+            app2.render()
+
+    demo.launch()
