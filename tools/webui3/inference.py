@@ -46,8 +46,7 @@ def audio_to_text(audio_input: Any) -> str:
         with open(newfilepath, "wb") as newf:
             newf.write(f.read())
     
-    # fileurl = f"{os.environ.get('AUDIO_URL')}/{filename}.wav"
-    fileurl = "https://hs-pub.bulingbuling.com/a_audio/7110e27d4df7a9c7222d382aeb0d9af2.wav"
+    fileurl = f"{os.environ.get('AUDIO_URL')}/{filename}.wav"
 
     task_response = Transcription.async_call(
         model='paraformer-v2',

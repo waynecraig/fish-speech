@@ -24,6 +24,7 @@ def build_app(inference_fct: Callable, theme: str = "light") -> gr.Blocks:
                 audio_input = gr.Audio(
                     label="录音",
                     type="filepath",
+                    sources=["microphone"]
                 )
                 send_button = gr.Button(
                     value="\U0001f4e4 发送",
