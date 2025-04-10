@@ -1,11 +1,9 @@
 from fish_speech.i18n import i18n
 
-HEADER_MD = f"""# 武汉话语音合成
+HEADER_MD = f"""# 武汉话语音对话
 
-当前版本：8
-
-更新日期：2025-04-09
+请录音输入语音消息，然后点击发送按钮。等结果返回后可以再次录音继续聊天。
 
 """
 
-TEXTBOX_PLACEHOLDER = "输入武汉话文本"
+TEXTBOX_PLACEHOLDER = ""

@@ -22,11 +22,11 @@ def inference_wrapper(audio_input, message_list, engine):
 
     # Step 1: Convert input audio to text
     audio_text = audio_to_text(audio_input)
-    message_list.append(ChatMessage(role="user", content=audio_text))
+    message_list.append({"role":"user", "content":audio_text})
 
     # Step 2: Generate response text
     response_text = generate_response_text(message_list, audio_text)
-    message_list.append(ChatMessage(role="assistant", content=response_text))
+    message_list.append({"role":"assistant", "content":response_text})
 
     # Step 3: Convert response text to audio
     audio_output, error = text_to_audio(response_text, engine)
@@ -74,9 +74,10 @@ def generate_response_text(message_list, input_text: str) -> str:
         api_key=os.getenv("DASHSCOPE_API_KEY"), 
         base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
     )
+    print("message_list:", message_list)
     completion = client.chat.completions.create(
         model="qwen-plus",
-        messages=[{"role": msg.role, "content": msg.content} for msg in message_list]
+        messages=[{"role": msg["role"], "content": msg["content"]} for msg in message_list]
     )
     return completion.choices[0].message.content or ""
 
@@ -89,7 +90,10 @@ def text_to_audio(text: str, engine) -> tuple:
     req = ServeTTSRequest(
         text=text,
         reference_id=None,
-        references=[],
+        references=get_reference_audio(
+            reference_audio="S0278.wav",
+            reference_text="我认为品冠唱的最后才学会蛮好听，播一首",
+        ),
         max_new_tokens=0,
         chunk_length=200,
         top_p=0.7,
@@ -109,6 +113,17 @@ def text_to_audio(text: str, engine) -> tuple:
                 pass
 
     return None, i18n("No audio generated")
+
+
+def get_reference_audio(reference_audio: str, reference_text: str) -> list:
+    """
+    Get the reference audio bytes.
+    """
+
+    with open(reference_audio, "rb") as audio_file:
+        audio_bytes = audio_file.read()
+
+    return [ServeReferenceAudio(audio=audio_bytes, text=reference_text)]
 
 
 def build_html_error_message(error: Any) -> str:

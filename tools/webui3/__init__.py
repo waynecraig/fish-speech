@@ -3,7 +3,7 @@ from typing import Callable
 import gradio as gr
 
 from fish_speech.i18n import i18n
-from tools.webui2.variables import HEADER_MD
+from tools.webui3.variables import HEADER_MD
 
 
 def build_app(inference_fct: Callable, theme: str = "light") -> gr.Blocks:
@@ -41,7 +41,7 @@ def build_app(inference_fct: Callable, theme: str = "light") -> gr.Blocks:
                 )
 
             with gr.Column(scale=3):
-                message_list = gr.Chatbot(type="messages", label="消息列表")
+                message_list = gr.Chatbot([{"role":"system","content":"你是一个武汉话聊天助手，请使用武汉话和用户聊天。"}],type="messages", label="消息列表")
 
         # Submit
         send_button.click(
